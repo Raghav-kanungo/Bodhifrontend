@@ -10,7 +10,8 @@ const Navbar = () => {
       <nav className="flex justify-between items-center h-20 max-w-6xl mx-auto">
         <NavLink to="/">
           <div className="ml-5">
-            <img src="../logo.png" className="h-14" />
+            <span className="text-xl ">BODHI BAKERY</span>
+            {/* <img src="../logo.png" className="h-14" /> */}
           </div>
         </NavLink>
 
@@ -18,6 +19,10 @@ const Navbar = () => {
           <NavLink to="/">
             <p>Home</p>
           </NavLink>
+
+          <button type="button">Login</button>
+          <button type="button">Register</button>
+          <button type="button">Logout</button>
 
           <NavLink to="/cart">
             <div className="relative">
