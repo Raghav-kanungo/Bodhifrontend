@@ -8,6 +8,23 @@ import { Navigate, useNavigate } from "react-router-dom";
 // price ka bacha hai !!
 // or api me dalna hai data
 
+// expected data -->
+/*
+{
+  "shippingInfo": {
+    "address": "123 Main Street",
+    "city": "Cityville",
+    "state": "Stateland",
+    "country": "Countryland",
+    "pinCode": 12345,
+    "phoneNo": 9876543210
+  },
+  
+  "totalPrice": 100000,
+}
+  ⚠⚠⚠⚠ make sure to name field same as above 
+*/
+
 const Order = () => {
   const [data, setData] = useState([]);
 
