@@ -1,63 +1,77 @@
-import React from "react";
+import React, { useContext } from "react";
 import { useState } from "react";
-
-// exepected a form with following 3 fileds
-// email  , password
-// submit button
-
-// expected data -->
-/*
-
-{
-    "email" : "abcxx@gmail.com" , 
-    "password" : "q1w2e3r4t5"
-}
-
-  ⚠⚠⚠⚠ make sure to name field same as above 
-*/
+import { NavLink, Navigate } from "react-router-dom";
+import { Context } from "..";
+import axios from "axios";
+import toast from "react-hot-toast";
+import { server } from "..";
 
 const Login = () => {
+  const { isAuthenticated, setIsAuthenticated, loading, setloading } =
+    useContext(Context);
+
   const [formData, setFormData] = useState({
     email: "",
     password: "",
   });
+
   function changeHandler(event) {
     const { name, value } = event.target;
-    setFormData((prevFormData) => {
-      // console.log(prevFormData);
-      return {
-        ...prevFormData,
-        [name]: value,
-      };
-    });
+    setFormData((prevFormData) => ({
+      ...prevFormData,
+      [name]: value,
+    }));
   }
-  function submitHandler(event) {
+
+  const submitHandler = async (event) => {
+    setloading(true);
     event.preventDefault();
-    console.log("Form Give DAta");
+    console.log("Form Give Data");
     console.log(formData);
-  }
+
+    try {
+      const response = await axios.post(`${server}/users/login`, formData, {
+        headers: {
+          "Content-Type": "application/json",
+        },
+        withCredentials: true,
+      });
+
+      const { data } = response;
+      toast.success(data.message);
+      setIsAuthenticated(true);
+      setloading(false);
+    } catch (error) {
+      setIsAuthenticated(false);
+      console.error(error);
+      setloading(false);
+      toast.error(error.response.data.message);
+    }
+  };
+  if (isAuthenticated) return <Navigate to={"/"} />;
   return (
-    <div className="flex flex-col flex-auto w-full h-screen  ">
+    <div className="flex flex-col flex-auto w-full h-screen">
       <div className="h-full">
         <div className="grid grid-cols-3 h-full">
-          <div className="bg-green-300 "></div>
-          <div c6lassName="col-span-2 flex justify-center items-center">
+          <div className="bg-green-300"></div>
+          <div className="col-span-2 flex justify-center items-center">
             <div className="min-w-[450] px-8">
               <div className="mb-8">
-                <h1 className="text-3xl font-medium ">
-                  Welcome to bodhi's store
+                <h1 className="text-3xl font-medium p-2 ">
+                  Login to Bodhi's Store
                 </h1>
-                <p>Please enter your credentials to sign in</p>
+                <p className="p-4">Please enter your credentials to sign in</p>
                 <form onSubmit={submitHandler}>
                   <div className="mb-3">
                     <label className="font-medium mb-2 flex">Email</label>
                     <input
-                      type="text"
+                      type="email"
                       placeholder="Enter your email"
                       name="email"
                       className="w-full border rounded-md bg-transparent border-gray-400 p-3"
                       onChange={changeHandler}
-                    ></input>
+                      required
+                    />
                   </div>
                   <div className="mb-3">
                     <label className="font-medium mb-2 flex">Password</label>
@@ -67,13 +81,23 @@ const Login = () => {
                       name="password"
                       className="w-full border rounded-md bg-transparent border-gray-400 p-3"
                       onChange={changeHandler}
-                    ></input>
+                      required
+                    />
                   </div>
                   <input
                     type="submit"
-                    value="Submit"
-                    className="block bg-blue-700 text-white w-full py-2 px-8 rounded"
-                  ></input>
+                    value="Login"
+                    disabled={loading}
+                    className="block bg-blue-700 text-white w-full py-2 px-8 rounded hover:bg-blue-800 transition-all delay-150  "
+                  />
+
+                  <div className="text-center m-2">OR</div>
+
+                  <NavLink to="/register" disabled={loading}>
+                    <p className="block bg-green-700 text-white w-full py-2 px-8 rounded hover:bg-green-800 transition-all delay-150 text-center mt-2">
+                      Sign Up
+                    </p>
+                  </NavLink>
                 </form>
               </div>
             </div>

@@ -1,13 +1,18 @@
 import { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
-import { Link } from "react-router-dom";
+import { Link, Navigate, useNavigate } from "react-router-dom";
 import CartItem from "../components/CartItem";
 
 const Cart = () => {
+  const navigate = useNavigate();
   const { cart } = useSelector((state) => state);
   console.log("Printing Cart");
   console.log(cart);
   const [totalAmount, setTotalAmount] = useState(0);
+
+  function checkoutHandler() {
+    navigate({ to: "/order" }, cart);
+  }
 
   useEffect(() => {
     setTotalAmount(cart.reduce((acc, curr) => acc + curr.price, 0));
@@ -47,7 +52,16 @@ const Cart = () => {
                 </span>{" "}
                 Rs {totalAmount}
               </p>
-              <button className="bg-green-700 hover:bg-purple-50 rounded-lg text-white transition duration-300 ease-linear mt-5 border-2 border-green-600 font-bold hover:text-green-700 p-3 text-xl">
+              <button
+                onClick={() => {
+                  const serializedObject = encodeURIComponent(
+                    JSON.stringify(cart)
+                  );
+
+                  navigate(`/order?data=${serializedObject}`);
+                }}
+                className="bg-green-700 hover:bg-purple-50 rounded-lg text-white transition duration-300 ease-linear mt-5 border-2 border-green-600 font-bold hover:text-green-700 p-3 text-xl"
+              >
                 CheckOut Now
               </button>
             </div>

@@ -1,64 +1,71 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { useState } from "react";
+import { isEqual } from "lodash";
+import { Navigate, useNavigate } from "react-router-dom";
 
-// exepected a form with following fields
-// address  , city  , state  , country , pincode  , phoneNo
-// submit button
-
-// expected data -->
-
-/*
-{
-  "shippingInfo": {
-    "address": "123 Main Street",
-    "city": "Cityville",
-    "state": "Stateland",
-    "country": "Countryland",
-    "pinCode": 12345,
-    "phoneNo": 9876543210
-  },
-  
-  "totalPrice": 100000,
-}
-  ⚠⚠⚠⚠ make sure to name field same as above 
-*/
+//#TO-DO
+// data aa gya hai peeche vale page se !!
+// price ka bacha hai !!
+// or api me dalna hai data
 
 const Order = () => {
+  const [data, setData] = useState([]);
+
+  useEffect(() => {
+    const urlParams = new URLSearchParams(window.location.search);
+    const dataParam = urlParams.get("data");
+
+    if (dataParam) {
+      try {
+        const decodedData = decodeURIComponent(dataParam);
+        const parsedData = JSON.parse(decodedData);
+
+        if (!isEqual(parsedData, data)) {
+          setData(parsedData);
+        }
+      } catch (error) {
+        console.error("Error parsing JSON:", error);
+      }
+    }
+  }, [data]);
+
+  console.log("hererit is ", data);
+
   const [formData, setFormData] = useState({
     address: "",
     city: "",
     state: "",
     country: "",
-    pinCode: " ",
+    pinCode: "",
     phoneNo: "",
   });
+
   function changeHandler(event) {
     const { name, value } = event.target;
-    setFormData((prevFormData) => {
-      // console.log(prevFormData);
-      return {
-        ...prevFormData,
-        [name]: value,
-      };
-    });
+    setFormData((prevFormData) => ({
+      ...prevFormData,
+      [name]: value,
+    }));
   }
+  const navigate = useNavigate();
   function submitHandler(event) {
     event.preventDefault();
-    console.log("Form Give DAta");
     console.log(formData);
+    navigate("/success");
   }
+
   return (
-    <div className="flex flex-col flex-auto w-full h-screen  ">
+    <div className="flex flex-col flex-auto w-full h-screen">
       <div className="h-full">
         <div className="grid grid-cols-3 h-full">
-          <div className="bg-green-300 "></div>
+          <div className="bg-green-300"></div>
           <div className="col-span-2 flex justify-center items-center">
             <div className="min-w-[450] px-8">
               <div className="mb-8">
-                <h1 className="text-3xl font-medium ">
-                  Welcome to bodhi's store
+                <h1 className="text-3xl font-medium p-2 ">
+                  Final Step To your order
                 </h1>
-                <p>Please enter your shipping address.....</p>
+                <p className="p-4">Please enter your shipping address.....</p>
                 <form onSubmit={submitHandler}>
                   <div className="mb-3">
                     <label className="font-medium mb-2 flex">Address</label>
@@ -68,7 +75,8 @@ const Order = () => {
                       name="address"
                       className="w-full border rounded-md bg-transparent border-gray-400 p-3"
                       onChange={changeHandler}
-                    ></input>
+                      required
+                    />
                   </div>
                   <div className="mb-3">
                     <label className="font-medium mb-2 flex">City</label>
@@ -78,7 +86,8 @@ const Order = () => {
                       name="city"
                       className="w-full border rounded-md bg-transparent border-gray-400 p-3"
                       onChange={changeHandler}
-                    ></input>
+                      required
+                    />
                   </div>
                   <div className="mb-3">
                     <label className="font-medium mb-2 flex">State</label>
@@ -88,7 +97,8 @@ const Order = () => {
                       name="state"
                       className="w-full border rounded-md bg-transparent border-gray-400 p-3"
                       onChange={changeHandler}
-                    ></input>
+                      required
+                    />
                   </div>
                   <div className="mb-3">
                     <label className="font-medium mb-2 flex">Country</label>
@@ -98,35 +108,61 @@ const Order = () => {
                       name="country"
                       className="w-full border rounded-md bg-transparent border-gray-400 p-3"
                       onChange={changeHandler}
-                    ></input>
+                      required
+                    />
                   </div>
+
                   <div className="mb-3">
                     <label className="font-medium mb-2 flex">Pincode</label>
+
                     <input
                       type="text"
-                      placeholder="Enter your pincode"
+                      placeholder="Enter your 6-digit pincode"
                       name="pinCode"
+                      pattern="\d{6}"
+                      title="Please enter a 6-digit pincode"
+                      maxLength="6"
                       className="w-full border rounded-md bg-transparent border-gray-400 p-3"
                       onChange={changeHandler}
-                    ></input>
+                      onKeyPress={(e) => {
+                        // Allow only numeric input
+                        if (e.which < 48 || e.which > 57) {
+                          e.preventDefault();
+                        }
+                      }}
+                      required
+                    />
                   </div>
+
                   <div className="mb-3">
                     <label className="font-medium mb-2 flex">
                       Phone number
                     </label>
+
                     <input
                       type="text"
-                      placeholder="Enter your phoneno"
+                      placeholder="Enter your 10-digit phone number"
                       name="phoneNo"
+                      pattern="\d{10}"
+                      title="Please enter a 10-digit phone number"
+                      maxLength="10"
                       className="w-full border rounded-md bg-transparent border-gray-400 p-3"
                       onChange={changeHandler}
-                    ></input>
+                      onKeyPress={(e) => {
+                        // Allow only numeric input
+                        if (e.which < 48 || e.which > 57) {
+                          e.preventDefault();
+                        }
+                      }}
+                      required
+                    />
                   </div>
+
                   <input
                     type="submit"
                     value="Submit"
-                    className="block bg-blue-700 text-white w-full py-2 px-8 rounded"
-                  ></input>
+                    className="block bg-blue-700 text-white w-full py-2 px-8 rounded hover:bg-blue-800 transition-all delay-150 "
+                  />
                 </form>
               </div>
             </div>

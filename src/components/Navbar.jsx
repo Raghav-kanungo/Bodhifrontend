@@ -1,10 +1,34 @@
+import { useContext } from "react";
 import { FaShoppingCart } from "react-icons/fa";
 import { useSelector } from "react-redux";
 import { NavLink } from "react-router-dom";
+import { Context } from "..";
+import axios from "axios";
+import { server } from "..";
+import { toast } from "react-toastify";
 
 const Navbar = () => {
   const { cart } = useSelector((state) => state);
+  const { isAuthenticated, setIsAuthenticated, loading, setloading } =
+    useContext(Context);
 
+  const logoutHandler = async (event) => {
+    setloading(true);
+    try {
+      await axios.get(`${server}/users/logout`, {
+        withCredentials: true,
+      });
+
+      console.log("fuction chala ");
+      toast.success("Logged Out Successfully");
+      setIsAuthenticated(false);
+      setloading(false);
+    } catch (error) {
+      setIsAuthenticated(true);
+      toast.error(error.response.data.message);
+      setloading(false);
+    }
+  };
   return (
     <div>
       <nav className="flex justify-between items-center h-20 max-w-6xl mx-auto">
@@ -20,9 +44,15 @@ const Navbar = () => {
             <p>Home</p>
           </NavLink>
 
-          <button type="button">Login</button>
-          <button type="button">Register</button>
-          <button type="button">Logout</button>
+          {isAuthenticated ? (
+            <button type="button" disabled={loading} onClick={logoutHandler}>
+              Logout
+            </button>
+          ) : (
+            <NavLink to="/login">
+              <p>Login</p>
+            </NavLink>
+          )}
 
           <NavLink to="/cart">
             <div className="relative">

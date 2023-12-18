@@ -6,19 +6,46 @@ import Order from "./pages/Order";
 import { Route } from "react-router-dom";
 import Home from "./pages/Home";
 import Cart from "./pages/Cart";
+import Success from "./pages/Success";
+import NotFound from "./pages/NotFound";
+import { useContext, useEffect } from "react";
+import axios from "axios";
+
+import { Context, server } from ".";
 
 const App = () => {
+  const { setUser, setIsAuthenticated } = useContext(Context);
+  useEffect(() => {
+    axios
+      .get(`${server}/users/me`, {
+        withCredentials: true,
+      })
+      .then((res) => {
+        setUser(res.data.user);
+        setIsAuthenticated(true);
+      })
+      .catch((e) => {
+        setUser({});
+        setIsAuthenticated(false);
+      });
+  }, []);
+
   return (
     <div>
       <div className="bg-[#dfe7dd]">
-        <Order />
+        <Navbar />
       </div>
+
       <Routes>
-       <Route path="/" element={<Home />} />
+        <Route path="/" element={<Home />} />
         <Route path="/cart" element={<Cart />} />
         <Route path="/success" element={<Success />} />
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
+        <Route path="/order" element={<Order />} />
+
+        {/* 404 route */}
+        <Route path="*" element={<NotFound />} />
       </Routes>
     </div>
   );
