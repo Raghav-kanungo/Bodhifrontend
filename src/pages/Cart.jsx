@@ -54,8 +54,9 @@ const Cart = () => {
               </p>
               <button
                 onClick={() => {
+                  const temp = { cart, totalAmount };
                   const serializedObject = encodeURIComponent(
-                    JSON.stringify(cart)
+                    JSON.stringify(temp)
                   );
 
                   navigate(`/order?data=${serializedObject}`);

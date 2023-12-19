@@ -14,7 +14,7 @@ import axios from "axios";
 import { Context, server } from ".";
 
 const App = () => {
-  const { setUser, setIsAuthenticated } = useContext(Context);
+  const { setUser, setIsAuthenticated, setuserID } = useContext(Context);
   useEffect(() => {
     axios
       .get(`${server}/users/me`, {
@@ -23,6 +23,7 @@ const App = () => {
       .then((res) => {
         setUser(res.data.user);
         setIsAuthenticated(true);
+        setuserID(res.data.user._id);
       })
       .catch((e) => {
         setUser({});

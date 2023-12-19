@@ -1,7 +1,10 @@
-import React, { useEffect } from "react";
+import React, { useContext, useEffect } from "react";
 import { useState } from "react";
 import { isEqual } from "lodash";
 import { Navigate, useNavigate } from "react-router-dom";
+import axios from "axios";
+import { Context, server } from "../index";
+import toast from "react-hot-toast";
 
 //#TO-DO
 // data aa gya hai peeche vale page se !!
@@ -25,8 +28,9 @@ import { Navigate, useNavigate } from "react-router-dom";
   ⚠⚠⚠⚠ make sure to name field same as above 
 */
 
-const Order = () => {
+const Order = (params) => {
   const [data, setData] = useState([]);
+  const { setloading, userID } = useContext(Context);
 
   useEffect(() => {
     const urlParams = new URLSearchParams(window.location.search);
@@ -65,10 +69,39 @@ const Order = () => {
     }));
   }
   const navigate = useNavigate();
-  function submitHandler(event) {
+
+  async function submitHandler(event) {
     event.preventDefault();
-    console.log(formData);
-    navigate("/success");
+
+    const order = {
+      shippingInfo: formData,
+      orderItems: data.cart,
+      user: userID,
+      totalPrice: data.totalAmount,
+      createdAt: Date.now(),
+      completed: false,
+    };
+
+    console.log(order);
+
+    try {
+      const response = await axios.post(`${server}/order/add`, order, {
+        headers: {
+          "Content-Type": "application/json",
+        },
+        withCredentials: true,
+      });
+
+      const { data } = response;
+      if (data.success == false) {
+        await toast.error(data.message);
+        navigate("/login");
+      } else navigate("/success");
+    } catch (error) {
+      console.log("error ba ", error);
+      setloading(false);
+      toast.error(error.response.data.message);
+    }
   }
 
   return (
