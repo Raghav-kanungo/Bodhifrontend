@@ -5,6 +5,7 @@ import { Context } from "..";
 import axios from "axios";
 import toast from "react-hot-toast";
 import { server } from "..";
+import login from "./register.jpeg";
 
 const Login = () => {
   const { isAuthenticated, setIsAuthenticated, loading, setloading } =
@@ -53,7 +54,9 @@ const Login = () => {
     <div className="flex flex-col flex-auto w-full h-screen">
       <div className="h-full">
         <div className="grid grid-cols-3 h-full">
-          <div className="bg-green-300"></div>
+          <div className="bg-[#e5f6df] h-[100vh] hidden flex-col items-center justify-center  lg:flex lg:">
+            <img src={login} className="rounded-3xl w-[75%]" />
+          </div>
           <div className="col-span-2 flex justify-center items-center">
             <div className="min-w-[450] px-8">
               <div className="mb-8">

@@ -1,7 +1,7 @@
 import { useContext } from "react";
 import { FaShoppingCart } from "react-icons/fa";
 import { useSelector } from "react-redux";
-import { NavLink } from "react-router-dom";
+import { NavLink, useNavigate } from "react-router-dom";
 import { Context } from "..";
 import axios from "axios";
 import { server } from "..";
@@ -11,16 +11,20 @@ const Navbar = () => {
   const { cart } = useSelector((state) => state);
   const { isAuthenticated, setIsAuthenticated, loading, setloading } =
     useContext(Context);
+  const navigate = useNavigate();
 
   const logoutHandler = async (event) => {
     setloading(true);
+    toast.success("Logged Out Successfully");
     try {
       await axios.get(`${server}/users/logout`, {
         withCredentials: true,
       });
 
-      console.log("fuction chala ");
-      toast.success("Logged Out Successfully");
+      navigate("/");
+
+      toast.success("Logged Out ");
+
       setIsAuthenticated(false);
       setloading(false);
     } catch (error) {

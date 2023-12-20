@@ -5,6 +5,7 @@ import { Navigate, useNavigate } from "react-router-dom";
 import axios from "axios";
 import { Context, server } from "../index";
 import toast from "react-hot-toast";
+import imgs from "./ship.jpeg";
 
 //#TO-DO
 // data aa gya hai peeche vale page se !!
@@ -101,6 +102,7 @@ const Order = (params) => {
       console.log("error ba ", error);
       setloading(false);
       toast.error(error.response.data.message);
+      if (error.response.data.message == "Login First") navigate("/login");
     }
   }
 
@@ -108,7 +110,9 @@ const Order = (params) => {
     <div className="flex flex-col flex-auto w-full h-screen">
       <div className="h-full">
         <div className="grid grid-cols-3 h-full">
-          <div className="bg-green-300"></div>
+          <div className="bg-[#e5f6df] h-[100vh] hidden flex-col items-center justify-center  lg:flex lg:">
+            <img src={imgs} className="rounded-3xl w-[75%]" />
+          </div>
           <div className="col-span-2 flex justify-center items-center">
             <div className="min-w-[450] px-8">
               <div className="mb-8">
