@@ -32,7 +32,7 @@ const Product = ({ post }) => {
         </p>
       </div>
       <div className="h-[180px]">
-        <img src={post.image} className="h-full w-full " />
+        <img src={post.image} className="h-full w-full rounded-3xl" />
       </div>
 
       <div className="flex justify-between gap-12 items-center w-full mt-5">
